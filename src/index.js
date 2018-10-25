@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import { createGlobalStyle } from 'styled-components';
 import reset from 'styled-reset';
 import * as serviceWorker from './serviceWorker';
+import MainPage from './components/5-pages/main-page';
 
 const GlobalStyle = createGlobalStyle`
   ${reset}
@@ -13,7 +14,7 @@ const GlobalStyle = createGlobalStyle`
 
 ReactDOM.render(
   <Fragment>
-    <div>Hello React!</div>
+    <MainPage />
     <GlobalStyle />
   </Fragment>,
   document.getElementById('root'),
