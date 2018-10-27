@@ -1,9 +1,11 @@
 import React, { Fragment } from 'react';
 import ReactDOM from 'react-dom';
+import { Provider } from 'react-redux';
 import { createGlobalStyle } from 'styled-components';
 import reset from 'styled-reset';
-import * as serviceWorker from './serviceWorker';
 import MainPage from './components/5-pages/main-page';
+import store from './ducks';
+import * as serviceWorker from './serviceWorker';
 
 const GlobalStyle = createGlobalStyle`
   ${reset}
@@ -13,10 +15,12 @@ const GlobalStyle = createGlobalStyle`
 `;
 
 ReactDOM.render(
-  <Fragment>
-    <MainPage />
-    <GlobalStyle />
-  </Fragment>,
+  <Provider store={store}>
+    <Fragment>
+      <MainPage />
+      <GlobalStyle />
+    </Fragment>
+  </Provider>,
   document.getElementById('root'),
 );
 
