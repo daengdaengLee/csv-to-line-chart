@@ -4,7 +4,6 @@
   "private": true,
   "dependencies": {
     "localforage": "^1.7.3",
-    "lodash": "^4.17.11",
     "prop-types": "^15.6.2",
     "react": "^16.5.2",
     "react-dom": "^16.5.2",
@@ -12,7 +11,8 @@
     "redux": "^4.0.1",
     "redux-saga": "^0.16.2",
     "styled-components": "^4.0.2",
-    "styled-reset": "^1.6.0"
+    "styled-reset": "^1.6.0",
+    "underscore": "^1.9.1"
   },
   "scripts": {
     "start": "react-scripts start",
