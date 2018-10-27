@@ -1,4 +1,5 @@
-import React, { Component } from 'react';
+import React from 'react';
+import { _refresh } from '../../../assets/js/utils';
 
 const STYLE = {
   width: '100%',
@@ -10,19 +11,10 @@ const STYLE = {
   cursor: 'pointer',
 };
 
-class MainHeader extends Component {
-  render() {
-    const { _onClickTitle } = this;
-    return (
-      <h1 style={STYLE} onClick={_onClickTitle}>
-        CSV to Line Chart
-      </h1>
-    );
-  }
-
-  _onClickTitle() {
-    window.location.reload(true);
-  }
-}
+const MainHeader = () => (
+  <h1 style={STYLE} onClick={_refresh}>
+    CSV to Line Chart
+  </h1>
+);
 
 export default MainHeader;
