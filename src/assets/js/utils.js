@@ -1,6 +1,6 @@
 import _ from 'underscore';
 
-export function _pipe(funcs) {
+export function _pipe(...funcs) {
   const reversedFuncs = [...funcs].reverse();
   return _.compose(...reversedFuncs);
 }
