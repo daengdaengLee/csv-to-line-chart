@@ -4,6 +4,7 @@ import { _singleValueToArray, _go } from '../../assets/js/utils';
 // Actions
 export const INIT = 'csvs/INIT';
 export const SET_ALL_IDS = 'csvs/SET_ALL_IDS';
+export const UPLOAD_CSV_FILE = 'csvs/UPLOAD_CSV_FILE';
 export const ADD_IDS = 'csvs/ADD_IDS';
 export const REMOVE_IDS = 'csvs/REMOVE_IDS';
 
@@ -63,6 +64,13 @@ export function setAllIds(ids) {
   return {
     type: SET_ALL_IDS,
     ids,
+  };
+}
+
+export function uploadCsvFile(file) {
+  return {
+    type: UPLOAD_CSV_FILE,
+    file,
   };
 }
 
