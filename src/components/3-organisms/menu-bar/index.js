@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { Component } from 'react';
+import InputFile from '../../2-molecules/input-file';
 
 const CONTAINER_STYLE = {
   display: 'flex',
@@ -17,11 +18,27 @@ const MENU_STYLE = {
   userSelect: 'none',
 };
 
-const MenuBar = () => (
-  <div style={CONTAINER_STYLE}>
-    <div style={MENU_STYLE}>open</div>
-    <div style={MENU_STYLE}>delete</div>
-  </div>
-);
+class MenuBar extends Component {
+  render() {
+    const { _onChangeFileInput } = this;
+    return (
+      <div style={CONTAINER_STYLE}>
+        <InputFile
+          renderDisplay={clickTrigger => (
+            <div style={MENU_STYLE} onClick={clickTrigger}>
+              open
+            </div>
+          )}
+          onChange={_onChangeFileInput}
+        />
+        <div style={MENU_STYLE}>delete</div>
+      </div>
+    );
+  }
+
+  _onChangeFileInput(event) {
+    console.log(event.target.files);
+  }
+}
 
 export default MenuBar;
