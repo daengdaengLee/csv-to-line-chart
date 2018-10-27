@@ -3,10 +3,13 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "localforage": "^1.7.3",
     "prop-types": "^15.6.2",
     "react": "^16.5.2",
     "react-dom": "^16.5.2",
     "react-scripts": "2.0.5",
+    "redux": "^4.0.1",
+    "redux-saga": "^0.16.2",
     "styled-components": "^4.0.2",
     "styled-reset": "^1.6.0"
   },
