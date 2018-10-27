@@ -1,36 +1,13 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import styled from 'styled-components';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import Presenter from './presenter';
+import { init } from '../../../ducks/modules/csvs';
 
-const CONTAINER_STYLE = {
-  display: 'flex',
-  flexDirection: 'column',
-  width: '200px',
-};
+const mapDispatchToProps = dispatch => ({
+  onInit: bindActionCreators(init, dispatch),
+});
 
-const Item = styled.li`
-  height: 26px;
-  display: flex;
-  align-items: center;
-  padding-left: 4px;
-  cursor: pointer;
-  &:hover {
-    background-color: skyblue;
-  }
-`;
-
-const _renderItem = item => <Item key={item}>{item}</Item>;
-
-const CsvList = ({ list }) => (
-  <ul style={CONTAINER_STYLE}>{list.map(_renderItem)}</ul>
-);
-
-CsvList.defaultProps = {
-  list: [],
-};
-
-CsvList.propTypes = {
-  list: PropTypes.arrayOf(PropTypes.string),
-};
-
-export default CsvList;
+export default connect(
+  null,
+  mapDispatchToProps,
+)(Presenter);
