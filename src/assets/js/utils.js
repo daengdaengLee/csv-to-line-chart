@@ -12,3 +12,7 @@ export function _go(val, ...funcs) {
 export function _singleValueToArray(val) {
   return _.isArray(val) ? val : [val];
 }
+
+export function _refresh() {
+  window.location.reload(true);
+}
