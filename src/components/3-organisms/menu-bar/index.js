@@ -1,44 +1,13 @@
-import React, { Component } from 'react';
-import InputFile from '../../2-molecules/input-file';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import Presenter from './presenter';
+import { uploadCsvFile } from '../../../ducks/modules/csvs';
 
-const CONTAINER_STYLE = {
-  display: 'flex',
-  height: '100%',
-};
+const mapDispatchToProps = dispatch => ({
+  onUploadCsvFile: bindActionCreators(uploadCsvFile, dispatch),
+});
 
-const MENU_STYLE = {
-  width: '100px',
-  boxSizing: 'border-box',
-  border: '1px solid black',
-  margin: '0 10px',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  cursor: 'pointer',
-  userSelect: 'none',
-};
-
-class MenuBar extends Component {
-  render() {
-    const { _onChangeFileInput } = this;
-    return (
-      <div style={CONTAINER_STYLE}>
-        <InputFile
-          renderDisplay={clickTrigger => (
-            <div style={MENU_STYLE} onClick={clickTrigger}>
-              open
-            </div>
-          )}
-          onChange={_onChangeFileInput}
-        />
-        <div style={MENU_STYLE}>delete</div>
-      </div>
-    );
-  }
-
-  _onChangeFileInput(event) {
-    console.log(event.target.files);
-  }
-}
-
-export default MenuBar;
+export default connect(
+  null,
+  mapDispatchToProps,
+)(Presenter);
