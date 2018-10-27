@@ -2,6 +2,7 @@ import _ from 'underscore';
 import { _singleValueToArray, _go } from '../../assets/js/utils';
 
 // Actions
+export const INIT = 'csvs/INIT';
 export const SET_ALL_IDS = 'csvs/SET_ALL_IDS';
 export const ADD_IDS = 'csvs/ADD_IDS';
 export const REMOVE_IDS = 'csvs/REMOVE_IDS';
@@ -52,6 +53,12 @@ function applyRemoveIds(state, { ids }) {
 }
 
 // Action Creators
+export function init() {
+  return {
+    type: INIT,
+  };
+}
+
 export function setAllIds(ids) {
   return {
     type: SET_ALL_IDS,
