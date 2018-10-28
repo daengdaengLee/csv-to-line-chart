@@ -7,10 +7,12 @@ export const SET_ALL_IDS = 'csvs/SET_ALL_IDS';
 export const UPLOAD_CSV_FILE = 'csvs/UPLOAD_CSV_FILE';
 export const ADD_IDS = 'csvs/ADD_IDS';
 export const REMOVE_IDS = 'csvs/REMOVE_IDS';
+export const SET_CURRENT_ID = 'csvs/SET_CURRENT_ID';
 
 // Init State
 const initState = {
   allIds: [],
+  currentId: '',
 };
 
 // Reducer
@@ -22,6 +24,8 @@ export default function csvsReducer(state = initState, action = {}) {
     return applyAddIds(state, action);
   case REMOVE_IDS:
     return applyRemoveIds(state, action);
+  case SET_CURRENT_ID:
+    return applySetCurrentId(state, action);
   default:
     return state;
   }
@@ -50,6 +54,13 @@ function applyRemoveIds(state, { ids }) {
       _singleValueToArray,
       _.partial(_.difference, state.allIds, _),
     ),
+  };
+}
+
+function applySetCurrentId(state, { id }) {
+  return {
+    ...state,
+    currentId: id,
   };
 }
 
@@ -85,5 +96,12 @@ export function removeIds(ids) {
   return {
     type: REMOVE_IDS,
     ids,
+  };
+}
+
+export function setCurrentId(id) {
+  return {
+    type: SET_CURRENT_ID,
+    id,
   };
 }
