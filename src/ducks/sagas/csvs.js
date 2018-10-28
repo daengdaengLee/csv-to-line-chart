@@ -1,17 +1,18 @@
-import { all, take, call, put, select } from 'redux-saga/effects';
+import { all, take, call, put, select, fork } from 'redux-saga/effects';
 import _ from 'underscore';
 import { _pipe, _singleValueToArray } from '../../assets/js/utils';
 import {
   INIT,
   UPLOAD_CSV_FILE,
   DELETE_CSV_FILE,
+  REMOVE_IDS,
   setAllIds,
   addIds,
   removeIds,
+  setCurrentId,
 } from '../modules/csvs';
 import localforage from '../../localforage';
 
-window.localforage = localforage;
 // Workers
 function* getCsvsFromLocalforage() {
   let csvs;
@@ -141,6 +142,13 @@ function* unsetCsvFromLocalforage(key) {
   return success;
 }
 
+function* getCurrentCsv() {
+  const current = yield select(
+    _pipe(_.property('csvs'), _.property('currentId')),
+  );
+  return current;
+}
+
 // Watchers
 function* watchInit() {
   while (true) {
@@ -170,6 +178,24 @@ function* watchDeleteCsvFile() {
   }
 }
 
+function* watchRemoveIds() {
+  while (true) {
+    const { ids } = yield take(REMOVE_IDS);
+    yield fork(function*() {
+      const current = yield call(getCurrentCsv);
+      const isRemoveCurrentCsv = _.isArray(ids)
+        ? _.contains(ids, current)
+        : ids === current;
+      yield isRemoveCurrentCsv && put(setCurrentId(''));
+    });
+  }
+}
+
 export default function* csvsSaga() {
-  yield all([watchInit(), watchUploadCsvFile(), watchDeleteCsvFile()]);
+  yield all([
+    watchInit(),
+    watchUploadCsvFile(),
+    watchDeleteCsvFile(),
+    watchRemoveIds(),
+  ]);
 }
