@@ -1,7 +1,14 @@
 import { all, take, call, put, select } from 'redux-saga/effects';
 import _ from 'underscore';
-import { _pipe } from '../../assets/js/utils';
-import { INIT, setAllIds, UPLOAD_CSV_FILE, addIds } from '../modules/csvs';
+import { _pipe, _singleValueToArray } from '../../assets/js/utils';
+import {
+  INIT,
+  UPLOAD_CSV_FILE,
+  DELETE_CSV_FILE,
+  setAllIds,
+  addIds,
+  removeIds,
+} from '../modules/csvs';
 import localforage from '../../localforage';
 
 window.localforage = localforage;
@@ -37,6 +44,20 @@ function* updateCsvsToLocalforage(fileName) {
   return success;
 }
 
+function* removeCsvsFromLocalforage(keys) {
+  let success;
+  const oldCsvs = yield select(_pipe(_.property('csvs'), _.property('allIds')));
+  const newCsvs = yield call(_.difference, oldCsvs, _singleValueToArray(keys));
+  try {
+    yield call(_.bind(localforage.setItem, localforage, 'csvs', newCsvs));
+    success = true;
+  } catch (error) {
+    console.error(error);
+    success = false;
+  }
+  return success;
+}
+
 function getStringFromCsvFile(file) {
   if (!window.FileReader) return;
   return new Promise((res, rej) => {
@@ -54,6 +75,18 @@ function* setCsvToLocalforage(name, csvAsString) {
   let success;
   try {
     yield call(_.bind(localforage.setItem, localforage, name, csvAsString));
+    success = true;
+  } catch (error) {
+    console.error(error);
+    success = false;
+  }
+  return success;
+}
+
+function* unsetCsvFromLocalforage(name) {
+  let success;
+  try {
+    yield call(_.bind(localforage.removeItem, localforage, name));
     success = true;
   } catch (error) {
     console.error(error);
@@ -82,6 +115,15 @@ function* watchUploadCsvFile() {
   }
 }
 
+function* watchDeleteCsvFile() {
+  while (true) {
+    const { id } = yield take(DELETE_CSV_FILE);
+    let success = yield call(unsetCsvFromLocalforage, id);
+    success = yield success && call(removeCsvsFromLocalforage, id);
+    yield success && put(removeIds(id));
+  }
+}
+
 export default function* csvsSaga() {
-  yield all([watchInit(), watchUploadCsvFile()]);
+  yield all([watchInit(), watchUploadCsvFile(), watchDeleteCsvFile()]);
 }
