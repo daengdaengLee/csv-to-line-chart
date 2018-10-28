@@ -1,5 +1,6 @@
 import React from 'react';
 import CsvList from '../../3-organisms/csv-list';
+import InfoBar from '../../3-organisms/info-bar';
 import MainHeader from '../../3-organisms/main-header';
 import MenuBar from '../../3-organisms/menu-bar';
 import MainTemplate from '../../4-templates/main-template';
@@ -19,7 +20,7 @@ const mockup = (color, width, height) => () => (
 const MainPage = () => (
   <MainTemplate
     renderTop={() => <MainHeader />}
-    renderBottom={mockup('blue')}
+    renderBottom={() => <InfoBar />}
     renderCenterTop={() => <MenuBar />}
     renderCenterCenter={mockup('skyblue')}
     renderCenterLeft={() => <CsvList list={MOCKUP_CSV_LIST} />}
