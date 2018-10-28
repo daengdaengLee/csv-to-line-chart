@@ -23,10 +23,11 @@ class MenuBar extends Component {
   constructor(props) {
     super(props);
     this._onChangeFileInput = this._onChangeFileInput.bind(this);
+    this._onClickDelete = this._onClickDelete.bind(this);
   }
 
   render() {
-    const { _onChangeFileInput } = this;
+    const { _onChangeFileInput, _onClickDelete } = this;
     return (
       <div style={CONTAINER_STYLE}>
         <InputFile
@@ -37,7 +38,9 @@ class MenuBar extends Component {
           )}
           onChange={_onChangeFileInput}
         />
-        <div style={MENU_STYLE}>delete</div>
+        <div style={MENU_STYLE} onClick={_onClickDelete}>
+          delete
+        </div>
       </div>
     );
   }
@@ -46,14 +49,23 @@ class MenuBar extends Component {
     const { onUploadCsvFile } = this.props;
     onUploadCsvFile(event.target.files[0]);
   }
+
+  _onClickDelete() {
+    const { currentCsv, onDeleteCsvFile } = this.props;
+    onDeleteCsvFile(currentCsv);
+  }
 }
 
 MenuBar.defaultProps = {
+  currentCsv: '',
   onUploadCsvFile: file => {},
+  onDeleteCsvFile: id => {},
 };
 
 MenuBar.propTypes = {
+  currentCsv: PropTypes.string,
   onUploadCsvFile: PropTypes.func,
+  onDeleteCsvFile: PropTypes.func,
 };
 
 export default MenuBar;
