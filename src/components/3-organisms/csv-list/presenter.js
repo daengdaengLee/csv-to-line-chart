@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import _ from 'underscore';
 import styled from 'styled-components';
 
 const CONTAINER_STYLE = {
@@ -19,18 +20,38 @@ const Item = styled.li`
   }
 `;
 
-const _renderItem = item => <Item key={item}>{item}</Item>;
+class CsvList extends Component {
+  constructor(props) {
+    super(props);
+    this._renderItem = this._renderItem.bind(this);
+  }
 
-const CsvList = ({ list }) => (
-  <ul style={CONTAINER_STYLE}>{list.map(_renderItem)}</ul>
-);
+  render() {
+    const {
+      _renderItem,
+      props: { list },
+    } = this;
+    return <ul style={CONTAINER_STYLE}>{list.map(_renderItem)}</ul>;
+  }
+
+  _renderItem(item) {
+    const { onClickItem } = this.props;
+    return (
+      <Item key={item} onClick={_.partial(onClickItem, item)}>
+        {item}
+      </Item>
+    );
+  }
+}
 
 CsvList.defaultProps = {
   list: [],
+  onClickItem: item => {},
 };
 
 CsvList.propTypes = {
   list: PropTypes.arrayOf(PropTypes.string),
+  onClickItem: PropTypes.func,
 };
 
 export default CsvList;
