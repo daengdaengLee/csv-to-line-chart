@@ -6,6 +6,7 @@ export const INIT = 'csvs/INIT';
 export const SET_ALL_IDS = 'csvs/SET_ALL_IDS';
 export const UPLOAD_CSV_FILE = 'csvs/UPLOAD_CSV_FILE';
 export const ADD_IDS = 'csvs/ADD_IDS';
+export const DELETE_CSV_FILE = 'csvs/DELETE_CSV_FILE';
 export const REMOVE_IDS = 'csvs/REMOVE_IDS';
 export const SET_CURRENT_ID = 'csvs/SET_CURRENT_ID';
 
@@ -89,6 +90,13 @@ export function addIds(ids) {
   return {
     type: ADD_IDS,
     ids,
+  };
+}
+
+export function deleteCsvFile(id) {
+  return {
+    type: DELETE_CSV_FILE,
+    id,
   };
 }
 
