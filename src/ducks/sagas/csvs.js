@@ -30,10 +30,10 @@ function* getCsvsFromLocalforage() {
   return csvs;
 }
 
-function* updateCsvsToLocalforage(fileName) {
+function* addCsvsToLocalforage(keys) {
   let success;
   const oldCsvs = yield select(_pipe(_.property('csvs'), _.property('allIds')));
-  const newCsvs = [...oldCsvs, fileName];
+  const newCsvs = yield call(_.bind(Array.prototype.concat, oldCsvs, keys));
   try {
     yield call(_.bind(localforage.setItem, localforage, 'csvs', newCsvs));
     success = true;
@@ -58,23 +58,23 @@ function* removeCsvsFromLocalforage(keys) {
   return success;
 }
 
-function getStringFromCsvFile(file) {
+function getStringFromCsvFile(key) {
   if (!window.FileReader) return;
   return new Promise((res, rej) => {
     const reader = new FileReader();
     reader.onload = evt => {
-      if (evt.target.readyState !== 2) rej();
+      if (evt.target.readyState !== 2) rej(undefined);
       return res(evt.target.result);
     };
-    reader.onerror = () => rej();
-    reader.readAsText(file);
+    reader.onerror = () => rej(undefined);
+    reader.readAsText(key);
   });
 }
 
-function* setCsvToLocalforage(name, csvAsString) {
+function* setCsvToLocalforage(key, csvAsString) {
   let success;
   try {
-    yield call(_.bind(localforage.setItem, localforage, name, csvAsString));
+    yield call(_.bind(localforage.setItem, localforage, key, csvAsString));
     success = true;
   } catch (error) {
     console.error(error);
@@ -83,10 +83,10 @@ function* setCsvToLocalforage(name, csvAsString) {
   return success;
 }
 
-function* unsetCsvFromLocalforage(name) {
+function* unsetCsvFromLocalforage(key) {
   let success;
   try {
-    yield call(_.bind(localforage.removeItem, localforage, name));
+    yield call(_.bind(localforage.removeItem, localforage, key));
     success = true;
   } catch (error) {
     console.error(error);
@@ -110,7 +110,7 @@ function* watchUploadCsvFile() {
     const { name: fileName } = action.file;
     const csvAsString = yield call(getStringFromCsvFile, action.file);
     let success = yield call(setCsvToLocalforage, fileName, csvAsString);
-    success = yield success && call(updateCsvsToLocalforage, fileName);
+    success = yield success && call(addCsvsToLocalforage, fileName);
     yield success && put(addIds(fileName));
   }
 }
