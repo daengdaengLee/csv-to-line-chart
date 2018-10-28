@@ -5,6 +5,7 @@
 
 # testing
 /coverage
+/assets-for-test
 
 # production
 /build
