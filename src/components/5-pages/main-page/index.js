@@ -1,11 +1,10 @@
 import React from 'react';
+import ChartViz from '../../3-organisms/chart-viz';
 import CsvList from '../../3-organisms/csv-list';
 import InfoBar from '../../3-organisms/info-bar';
 import MainHeader from '../../3-organisms/main-header';
 import MenuBar from '../../3-organisms/menu-bar';
 import MainTemplate from '../../4-templates/main-template';
-
-const MOCKUP_CSV_LIST = ['csv1', 'csv2', 'csv3'];
 
 const mockup = (color, width, height) => () => (
   <div
@@ -22,8 +21,8 @@ const MainPage = () => (
     renderTop={() => <MainHeader />}
     renderBottom={() => <InfoBar />}
     renderCenterTop={() => <MenuBar />}
-    renderCenterCenter={mockup('skyblue')}
-    renderCenterLeft={() => <CsvList list={MOCKUP_CSV_LIST} />}
+    renderCenterCenter={() => <ChartViz />}
+    renderCenterLeft={() => <CsvList />}
     renderCenterRight={mockup('silver', '10rem')}
   />
 );
