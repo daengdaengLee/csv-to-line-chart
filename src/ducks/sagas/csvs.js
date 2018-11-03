@@ -1,6 +1,7 @@
-import { all, take, call, put, select, fork } from 'redux-saga/effects';
+import { all, take, call, put, select, fork, cancel } from 'redux-saga/effects';
 import _ from 'underscore';
 import { _pipe, _singleValueToArray } from '../../assets/js/utils';
+import { settingEnd, setSerieses } from '../modules/charts';
 import {
   INIT,
   UPLOAD_CSV_FILE,
@@ -10,6 +11,7 @@ import {
   addIds,
   removeIds,
   setCurrentId,
+  SET_CURRENT_ID,
 } from '../modules/csvs';
 import localforage from '../../localforage';
 
@@ -149,6 +151,33 @@ function* getCurrentCsv() {
   return current;
 }
 
+function* settingChartOf(id) {
+  let string;
+  try {
+    string = yield call(_.bind(localforage.getItem, localforage, id));
+    const array = string.split('\n');
+    const seriesIds = array[0].split(',');
+    const numbers = _.map(array.slice(1), str =>
+      _.map(str.split(','), num => parseFloat(num)),
+    );
+    const serieses = _.map(seriesIds, (id, colIdx) => {
+      const points = _.map(numbers, (row, rowIdx) => {
+        const num = row[colIdx];
+        return { x: rowIdx, y: num };
+      });
+      return {
+        id,
+        points,
+      };
+    });
+    yield put(setSerieses(serieses));
+    yield put(settingEnd(true));
+  } catch (error) {
+    console.error(error);
+    yield put(settingEnd(false));
+  }
+}
+
 // Watchers
 function* watchInit() {
   while (true) {
@@ -191,11 +220,26 @@ function* watchRemoveIds() {
   }
 }
 
+function* watchSetCurrentId() {
+  let task;
+  while (true) {
+    const { id } = yield take(SET_CURRENT_ID);
+    const {
+      csvs: { currentId },
+      charts: { isLoading, isError },
+    } = yield select(state => state);
+    if (currentId === id && isLoading && !isError) continue;
+    if (task) yield cancel(task);
+    task = yield fork(settingChartOf, id);
+  }
+}
+
 export default function* csvsSaga() {
   yield all([
     watchInit(),
     watchUploadCsvFile(),
     watchDeleteCsvFile(),
     watchRemoveIds(),
+    watchSetCurrentId(),
   ]);
 }
