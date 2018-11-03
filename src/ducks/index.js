@@ -1,10 +1,10 @@
 import { combineReducers, createStore, applyMiddleware, compose } from 'redux';
 import createSagaMiddleware from 'redux-saga';
 import rootSaga from './sagas';
-import widgets from './modules/widgets';
+import charts from './modules/charts';
 import csvs from './modules/csvs';
 
-const rootReducer = combineReducers({ widgets, csvs });
+const rootReducer = combineReducers({ charts, csvs });
 
 const sagaMiddleware = createSagaMiddleware();
 

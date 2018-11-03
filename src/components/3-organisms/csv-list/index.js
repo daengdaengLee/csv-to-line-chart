@@ -1,12 +1,12 @@
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import Presenter from './presenter';
-import { clickItem } from '../../../ducks/modules/widgets/csv-lists';
+import { setCurrentId } from '../../../ducks/modules//csvs';
 
 const mapStateToProps = ({ csvs: { allIds: list } }) => ({ list });
 
 const mapDispatchToProps = dispatch => ({
-  onClickItem: bindActionCreators(clickItem, dispatch),
+  onClickItem: bindActionCreators(setCurrentId, dispatch),
 });
 
 export default connect(
