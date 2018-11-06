@@ -4,11 +4,15 @@ import _ from 'underscore';
 import * as d3 from 'd3';
 import randomColor from 'randomcolor';
 
+const MARGIN = 40;
+
 class ChartViz extends Component {
   constructor(props) {
     super(props);
     this._container = React.createRef();
     this._canvas = React.createRef();
+    this._xG = React.createRef();
+    this._yG = React.createRef();
     this._getContainerSize = this._getContainerSize.bind(this);
     this._getXExtent = this._getXExtent.bind(this);
     this._getYExtent = this._getYExtent.bind(this);
@@ -19,6 +23,8 @@ class ChartViz extends Component {
     const {
       _container,
       _canvas,
+      _xG,
+      _yG,
       props: { isOpen, isLoading, isError, currentId },
     } = this;
     return (
@@ -48,6 +54,14 @@ class ChartViz extends Component {
           </div>
           <div ref={_container} style={{ flexGrow: 1, position: 'relative' }}>
             <canvas style={{ position: 'absolute' }} ref={_canvas} />
+            <svg
+              style={{ position: 'absolute', width: '100%', height: '100%' }}
+            >
+              <g transform={`translate(${MARGIN}, ${MARGIN})`}>
+                <g ref={_xG} />
+                <g ref={_yG} />
+              </g>
+            </svg>
           </div>
         </div>
       ))
@@ -66,7 +80,7 @@ class ChartViz extends Component {
     const {
       _container: { current: el },
     } = this;
-    if (!el) return undefined;
+    if (!el) return [0, 0];
     return [el.clientWidth, el.clientHeight];
   }
 
@@ -96,29 +110,35 @@ class ChartViz extends Component {
 
   _draw() {
     const {
-      _canvas,
+      _canvas: { current: canvas },
+      _xG: { current: xG },
+      _yG: { current: yG },
       _getContainerSize,
       _getXExtent,
       _getYExtent,
       props: { allSeriesIds, seriesesById },
     } = this;
-    if (!_canvas.current) return;
+    if (!canvas || !xG || !yG) return;
     const containerSize = _getContainerSize();
-    if (!containerSize) return;
     const [containerWidth, containerHeight] = containerSize;
-    _canvas.current.width = containerWidth;
-    _canvas.current.height = containerHeight;
-    const ctx = _canvas.current.getContext('2d');
+    canvas.width = containerWidth;
+    canvas.height = containerHeight;
+    const ctx = canvas.getContext('2d');
     const [minX, maxX] = _getXExtent();
     const [minY, maxY] = _getYExtent();
+    const width = containerWidth - 2 * MARGIN;
+    const height = containerHeight - 2 * MARGIN;
     const xScale = d3
       .scaleLinear()
       .domain([minX, maxX])
-      .range([0, containerWidth]);
+      .range([0, width]);
     const yScale = d3
       .scaleLinear()
       .domain([maxY, minY])
-      .range([0, containerHeight]);
+      .range([0, height]);
+    const xAxis = d3.axisBottom().scale(xScale);
+    const yAxis = d3.axisLeft().scale(yScale);
+    ctx.translate(MARGIN, MARGIN);
     for (let seriesId of allSeriesIds) {
       const series = seriesesById[seriesId];
       ctx.beginPath();
@@ -130,6 +150,10 @@ class ChartViz extends Component {
       ctx.strokeStyle = randomColor();
       ctx.stroke();
     }
+    d3.select(xG)
+      .attr('transform', `translate(0, ${height})`)
+      .call(xAxis);
+    d3.select(yG).call(yAxis);
   }
 }
 
